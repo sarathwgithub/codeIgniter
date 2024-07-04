@@ -360,7 +360,8 @@
 
 
 12. Create edit.php (app/Views/stock/edit.php)
-        ```html
+    
+     ```html
             <!DOCTYPE html>
             <html>
             <head>
@@ -386,7 +387,7 @@
                     <button type="submit">Update</button>
                     <?= form_close() ?>
             </body>
-            </html>
+            </html>   
 
-14. 
-15. 
+    
+    

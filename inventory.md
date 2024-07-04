@@ -138,15 +138,15 @@
         namespace App\Controllers;
 
         use App\Models\StockModel;
-        use App\Models\ProductModel;
+        use App\Models\ProductsModel;
         use CodeIgniter\Controller;
         
-        class StockController extends BaseController
+        class Stock extends BaseController
         {
             public function index()
             {
                 $stockModel = new StockModel();
-                $productModel = new ProductModel();
+                $productModel = new ProductsModel();
                 
                 $data['stocks'] = $stockModel->select('stock.*, products.name')
                                              ->join('products', 'products.id = stock.product_id')
@@ -157,7 +157,8 @@
         
             public function create()
             {
-                $productModel = new ProductModel();
+                helper('form');
+                $productModel = new ProductsModel();
                 $data['products'] = $productModel->findAll();
         
                 return view('stock/create', $data);
@@ -181,8 +182,9 @@
         
             public function edit($id)
             {
+                helper('form');
                 $stockModel = new StockModel();
-                $productModel = new ProductModel();
+                $productModel = new ProductsModel();
         
                 $data['stock'] = $stockModel->find($id);
                 $data['products'] = $productModel->findAll();
@@ -190,7 +192,7 @@
                 return view('stock/edit', $data);
             }
         
-            public function update($id)
+            public function update()
             {
                 $stockModel = new StockModel();
         
@@ -201,7 +203,7 @@
                     'date_received'=> $this->request->getPost('date_received'),
                 ];
         
-                $stockModel->update($id, $data);
+                $stockModel->update($this->request->getPost('id'), $data);
         
                 return redirect()->to('/stock');
             }
@@ -223,7 +225,7 @@
         </head>
         <body>
             <h1>Products</h1>
-            <a href="/products/create">Add New Product</a>
+            <a href="<?= site_url('products/create') ?>">Add New Product</a>
             <table border="1">
                 <tr>
                     <th>ID</th>
@@ -237,14 +239,16 @@
                     <td><?= $product['name'] ?></td>
                     <td><?= $product['description'] ?></td>
                     <td>
-                        <a href="/products/edit/<?= $product['id'] ?>">Edit</a>
-                        <a href="/products/delete/<?= $product['id'] ?>">Delete</a>
+                        <a href="<?= site_url('products/edit/'.$product['id'])  ?>">Edit</a>
+                        <a href="<?= site_url('products/delete/'.$product['id']) ?>" onclick="return confirm('Are you sure you want to delete this stock entry?')">Delete</a>
                     </td>
                 </tr>
                 <?php endforeach; ?>
             </table>
         </body>
         </html>
+
+
 
 8. Create create.php (app/Views/products/create.php)
     ```php
@@ -255,33 +259,39 @@
         </head>
         <body>
             <h1>Add New Product</h1>
-            <form action="/products/store" method="post">
+            <?= form_open('products/store') ?>
+            
                 <label>Name</label>
                 <input type="text" name="name" required>
                 <label>Description</label>
                 <textarea name="description" required></textarea>
                 <button type="submit">Save</button>
-            </form>
+            <?= form_close() ?>
         </body>
         </html>
+
 
 9. Create edit.php (app/Views/products/edit.php):
     ```html
         <!DOCTYPE html>
         <html>
+        
         <head>
             <title>Edit Product</title>
         </head>
+        
         <body>
             <h1>Edit Product</h1>
-            <form action="/products/update/<?= $product['id'] ?>" method="post">
-                <label>Name</label>
-                <input type="text" name="name" value="<?= $product['name'] ?>" required>
-                <label>Description</label>
-                <textarea name="description" required><?= $product['description'] ?></textarea>
-                <button type="submit">Update</button>
-            </form>
+            <?= form_open('products/update') ?>
+            <label>Name</label>
+            <input type="text" name="name" value="<?= $product['name'] ?>" required>
+            <label>Description</label>
+            <textarea name="description" required><?= $product['description'] ?></textarea>
+            <input type="hidden" name="id" id="id" value="<?= $product['id'] ?>">
+            <button type="submit">Update</button>
+            <?= form_close() ?>
         </body>
+        
         </html>
 
 10. Create index.php (app/Views/stock/index.php)
@@ -293,7 +303,7 @@
         </head>
         <body>
             <h1>Stock</h1>
-            <a href="/stock/create">Add New Stock</a>
+            <a href="<?= site_url('stock/create') ?>">Add New Stock</a>
             <table border="1">
                 <tr>
                     <th>ID</th>
@@ -301,9 +311,25 @@
                     <th>Quantity</th>
                     <th>Price</th>
                     <th>Date Received</th>
-                    <th></th>
+                    <th>Actions</th>
                 </tr>
+                <?php foreach ($stocks as $stock): ?>
+                <tr>
+                    <td><?= $stock['id'] ?></td>
+                    <td><?= $stock['name'] ?></td>
+                    <td><?= $stock['quantity'] ?></td>
+                    <td><?= $stock['price'] ?></td>
+                    <td><?= $stock['date_received'] ?></td>
+                    <td>
+                        <a href="<?= site_url('stock/edit/' . $stock['id']) ?>">Edit</a>
+                        <a href="<?= site_url('stock/delete/' . $stock['id']) ?>" onclick="return confirm('Are you sure you want to delete this stock entry?')">Delete</a>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
             </table>
+        </body>
+        </html>
+
 
 11. Create create.php (app/Views/stock/create.php)
     ```html
@@ -314,7 +340,7 @@
         </head>
         <body>
             <h1>Add New Stock</h1>
-            <form action="/stock/store" method="post">
+            <?= form_open('stock/store') ?>    
                 <label>Product</label>
                 <select name="product_id" required>
                     <?php foreach ($products as $product): ?>
@@ -328,11 +354,39 @@
                 <label>Date Received</label>
                 <input type="date" name="date_received" required>
                 <button type="submit">Save</button>
-            </form>
+                <?= form_close() ?>
         </body>
         </html>
 
-12. Create edit.php (app/Views/stock/edit.php)
 
-13. 
+12. Create edit.php (app/Views/stock/edit.php)
+        ```html
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Edit Stock</title>
+            </head>
+            <body>
+                <h1>Edit Stock</h1>
+                
+                <?= form_open('stock/update') ?>    
+                    <label>Product</label>
+                    <select name="product_id" required>
+                        <?php foreach ($products as $product): ?>
+                            <option value="<?= $product['id'] ?>" <?= ($stock['product_id'] == $product['id']) ? 'selected' : '' ?>><?= $product['name'] ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <label>Quantity</label>
+                    <input type="number" name="quantity" value="<?= $stock['quantity'] ?>" required>
+                    <label>Price</label>
+                    <input type="text" name="price" value="<?= $stock['price'] ?>" required>
+                    <label>Date Received</label>
+                    <input type="date" name="date_received" value="<?= $stock['date_received'] ?>" required>
+                    <input type="hidden" id="id" name="id" value="<?= $stock['id'] ?>">
+                    <button type="submit">Update</button>
+                    <?= form_close() ?>
+            </body>
+            </html>
+
 14. 
+15. 

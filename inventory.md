@@ -31,7 +31,7 @@
       (3, 20, 75.00, '2024-07-01');
 
 2. Create ProductsModel.php (app/Models/ProductsModel.php):    
-
+    php spark make:model ProductsModel
       ```php
           namespace App\Models;
   
@@ -47,6 +47,7 @@
     
  
 4. Create StockModel.php (app/Models/StockModel.php):
+   php spark make:model StockModel
     ```php
       namespace App\Models;
 
@@ -59,7 +60,8 @@
           protected $allowedFields = ['product_id', 'quantity', 'price', 'date_received', 'created_at', 'updated_at'];
           protected $useTimestamps = true;
       }
-5. Create Product.php (app/Controllers/Product.php):
+6. Create Product.php (app/Controllers/Product.php):
+   php spark make:controller Product
     ```php
         <?php
 
@@ -133,7 +135,8 @@
             }
         }
 
-6. Create Stock.php (app/Controllers/Stock.php):
+8. Create Stock.php (app/Controllers/Stock.php):
+   php spark make:controller Stock
     ```php
         namespace App\Controllers;
 
@@ -216,7 +219,7 @@
                 return redirect()->to('/stock');
             }
         }
-7. Create index.php (app/Views/products/index.php)
+10. Create index.php (app/Views/products/index.php)
     ```php
         <!DOCTYPE html>
         <html>
@@ -250,7 +253,7 @@
 
 
 
-8. Create create.php (app/Views/products/create.php)
+11. Create create.php (app/Views/products/create.php)
     ```php
         <!DOCTYPE html>
         <html>
@@ -271,7 +274,7 @@
         </html>
 
 
-9. Create edit.php (app/Views/products/edit.php):
+12. Create edit.php (app/Views/products/edit.php):
     ```html
         <!DOCTYPE html>
         <html>
@@ -294,7 +297,7 @@
         
         </html>
 
-10. Create index.php (app/Views/stock/index.php)
+13. Create index.php (app/Views/stock/index.php)
     ```html
         <!DOCTYPE html>
         <html>
@@ -331,7 +334,7 @@
         </html>
 
 
-11. Create create.php (app/Views/stock/create.php)
+14. Create create.php (app/Views/stock/create.php)
     ```html
         <!DOCTYPE html>
         <html>
@@ -359,7 +362,7 @@
         </html>
 
 
-12. Create edit.php (app/Views/stock/edit.php)
+15. Create edit.php (app/Views/stock/edit.php)
     
      ```html
             <!DOCTYPE html>

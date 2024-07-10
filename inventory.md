@@ -30,7 +30,7 @@
       (2, 5, 50.00, '2024-07-01'),
       (3, 20, 75.00, '2024-07-01');
 
-2. Create ProductModel.php (app/Models/ProductModel.php):    
+2. Create ProductsModel.php (app/Models/ProductsModel.php):    
 
       ```php
           namespace App\Models;
@@ -59,7 +59,7 @@
           protected $allowedFields = ['product_id', 'quantity', 'price', 'date_received', 'created_at', 'updated_at'];
           protected $useTimestamps = true;
       }
-5. Create ProductController.php (app/Controllers/ProductController.php):
+5. Create Product.php (app/Controllers/Product.php):
     ```php
         <?php
 
@@ -133,7 +133,7 @@
             }
         }
 
-6. Create StockController.php (app/Controllers/StockController.php):
+6. Create Stock.php (app/Controllers/Stock.php):
     ```php
         namespace App\Controllers;
 
